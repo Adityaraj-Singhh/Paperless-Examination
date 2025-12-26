@@ -2,6 +2,9 @@
 
 ## Setup Instructions
 
+Creating Admin  - npx ts-node create-admin.ts
+University ID Testing : 3f9b941b-e0a2-4d6f-a58c-2f39e8ae410f
+Default Student Creation Will happen now.
 ### Prerequisites
 
 - Node.js 20+
