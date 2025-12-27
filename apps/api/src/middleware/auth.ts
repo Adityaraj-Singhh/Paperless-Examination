@@ -7,7 +7,7 @@ import { AppError } from './errorHandler';
  * Extended Request with User Context
  */
 export interface AuthRequest extends Request {
-  user: JWTPayload;
+  user?: JWTPayload;
 }
 
 /**

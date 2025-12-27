@@ -4,12 +4,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { logger } from './config/logger';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
-import authRoutes from './routes/auth.routes';
-import universityRoutes from './routes/university.routes';
-import schoolRoutes from './routes/school.routes';
-import departmentRoutes from './routes/department.routes';
-import programmeRoutes from './routes/programme.routes';
-import courseRoutes from './routes/course.routes';
+import mainRouter from './routes/index';
 
 // Load environment variables
 dotenv.config();
@@ -37,10 +32,11 @@ class App {
     // CORS configuration
     this.app.use(
       cors({
-        origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+        origin: ['http://localhost:3000', 'http://localhost:3001'],
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization'],
+        optionsSuccessStatus: 200,
       })
     );
 
@@ -65,13 +61,8 @@ class App {
    * Initialize API Routes
    */
   private initializeRoutes(): void {
-    // API Version 1
-    this.app.use('/api/v1/auth', authRoutes);
-    this.app.use('/api/v1/universities', universityRoutes);
-    this.app.use('/api/v1/schools', schoolRoutes);
-    this.app.use('/api/v1/departments', departmentRoutes);
-    this.app.use('/api/v1/programmes', programmeRoutes);
-    this.app.use('/api/v1/courses', courseRoutes);
+    // Mount all API v1 routes
+    this.app.use('/api/v1', mainRouter);
 
     // Root endpoint
     this.app.get('/', (_req, res) => {

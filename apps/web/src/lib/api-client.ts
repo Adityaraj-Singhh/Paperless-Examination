@@ -135,4 +135,89 @@ export const api = {
         newPassword,
       }),
   },
+
+  /**
+   * Universities
+   */
+  universities: {
+    create: (data: {
+      name: string;
+      code: string;
+      email: string;
+      phone?: string;
+      address?: string;
+      city?: string;
+      state?: string;
+      country?: string;
+      website?: string;
+      logo?: string;
+    }) => apiClient.post<ApiResponse>('/universities', data),
+
+    getAll: () => apiClient.get<ApiResponse>('/universities'),
+
+    getById: (id: string) => apiClient.get<ApiResponse>(`/universities/${id}`),
+
+    update: (id: string, data: any) =>
+      apiClient.patch<ApiResponse>(`/universities/${id}`, data),
+
+    delete: (id: string) => apiClient.delete<ApiResponse>(`/universities/${id}`),
+  },
+
+  /**
+   * Users
+   */
+  users: {
+    createAdmin: (
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string,
+      universityId: string,
+      phone?: string
+    ) =>
+      apiClient.post<ApiResponse>('/users/admin', {
+        email,
+        password,
+        firstName,
+        lastName,
+        universityId,
+        phone,
+      }),
+
+    createTeacher: (
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string,
+      phone?: string
+    ) =>
+      apiClient.post<ApiResponse>('/users/teacher', {
+        email,
+        password,
+        firstName,
+        lastName,
+        phone,
+      }),
+
+    createStudent: (
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string,
+      studentId: string,
+      phone?: string
+    ) =>
+      apiClient.post<ApiResponse>('/users/student', {
+        email,
+        password,
+        firstName,
+        lastName,
+        studentId,
+        phone,
+      }),
+
+    getAll: () => apiClient.get<ApiResponse>('/users'),
+
+    delete: (id: string) => apiClient.delete<ApiResponse>(`/users/${id}`),
+  },
 };

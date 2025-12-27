@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
@@ -44,7 +45,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, Building2, School, GraduationCap, BookOpen, Building } from 'lucide-react';
-import { useAuthStore } from '@/store/auth.store';
+import { useAuth } from '@/store/auth.store';
+import { UserRole } from '@paperless/shared';
 
 interface School {
   id: string;
@@ -104,9 +106,24 @@ interface Course {
 }
 
 export default function AdminPage() {
-  const { user } = useAuthStore();
+  const { user, hasRole } = useAuth();
   const [activeTab, setActiveTab] = useState('schools');
   const queryClient = useQueryClient();
+
+  // Only allow ADMIN users to access this page
+  if (!hasRole(UserRole.ADMIN)) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
+          <p className="text-gray-600 mb-4">This page is only accessible to university administrators.</p>
+          <Link href="/dashboard">
+            <Button>Go to Dashboard</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   // Dialog states
   const [schoolDialogOpen, setSchoolDialogOpen] = useState(false);

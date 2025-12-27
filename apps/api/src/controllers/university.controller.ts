@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { body, param } from 'express-validator';
+import { UserRole } from '@paperless/shared';
 import { prisma } from '../config/database';
 import { AppError, asyncHandler } from '../middleware/errorHandler';
 import { AuthRequest } from '../middleware/auth';
@@ -91,6 +92,15 @@ export class UniversityController {
    */
   static getById = asyncHandler<AuthRequest>(async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
+    const user = req.user!;
+
+    // Allow SUPER_ADMIN or users belonging to this university
+    const isSuperAdmin = user.roles.includes(UserRole.SUPER_ADMIN);
+    const isOwnUniversity = user.universityId === id;
+
+    if (!isSuperAdmin && !isOwnUniversity) {
+      throw new AppError(403, 'Access denied');
+    }
 
     const university = await prisma.university.findUnique({
       where: { id },

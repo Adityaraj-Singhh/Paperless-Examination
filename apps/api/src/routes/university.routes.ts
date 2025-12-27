@@ -11,21 +11,20 @@ import { param } from 'express-validator';
 
 const router = Router();
 
-// All university routes require authentication and SUPER_ADMIN role
+// All university routes require authentication
 router.use(authenticate);
-router.use(requireRole(UserRole.SUPER_ADMIN));
 
 /**
  * @route   GET /api/v1/universities
  * @desc    Get all universities
  * @access  Super Admin
  */
-router.get('/', UniversityController.getAll as any);
+router.get('/', requireRole(UserRole.SUPER_ADMIN), UniversityController.getAll as any);
 
 /**
  * @route   GET /api/v1/universities/:id
  * @desc    Get university by ID
- * @access  Super Admin
+ * @access  Super Admin or users belonging to the university
  */
 router.get(
   '/:id',
@@ -40,6 +39,7 @@ router.get(
  */
 router.post(
   '/',
+  requireRole(UserRole.SUPER_ADMIN),
   validate(createUniversityValidation),
   UniversityController.create as any
 );
@@ -51,6 +51,7 @@ router.post(
  */
 router.put(
   '/:id',
+  requireRole(UserRole.SUPER_ADMIN),
   validate(updateUniversityValidation),
   UniversityController.update as any
 );
@@ -62,6 +63,7 @@ router.put(
  */
 router.delete(
   '/:id',
+  requireRole(UserRole.SUPER_ADMIN),
   validate([param('id').isUUID().withMessage('Valid university ID is required')]),
   UniversityController.delete as any
 );
@@ -73,6 +75,7 @@ router.delete(
  */
 router.patch(
   '/:id/toggle-status',
+  requireRole(UserRole.SUPER_ADMIN),
   validate([param('id').isUUID().withMessage('Valid university ID is required')]),
   UniversityController.toggleStatus as any
 );

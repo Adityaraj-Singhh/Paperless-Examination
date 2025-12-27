@@ -303,7 +303,7 @@ export class AuthController {
       await prisma.refreshToken.updateMany({
         where: {
           token: refreshToken,
-          userId: authReq.user.userId,
+          userId: authReq.user!.userId,
         },
         data: {
           isRevoked: true,
@@ -317,13 +317,13 @@ export class AuthController {
 
     // Log audit
     await AuditService.logLogout({
-      universityId: authReq.user.universityId,
-      userId: authReq.user.userId,
+      universityId: authReq.user!.universityId,
+      userId: authReq.user!.userId,
       ipAddress: req.ip,
       userAgent: req.get('user-agent'),
     });
 
-    logger.info(`User logged out: ${authReq.user.email}`);
+    logger.info(`User logged out: ${authReq.user!.email}`);
 
     sendSuccess(res, null, 'Logout successful');
   });
@@ -336,7 +336,7 @@ export class AuthController {
     const authReq = req as AuthRequest;
 
     const user = await prisma.user.findUnique({
-      where: { id: authReq.user.userId },
+      where: { id: authReq.user!.userId },
       select: {
         id: true,
         email: true,
@@ -375,7 +375,7 @@ export class AuthController {
     const { firstName, lastName, phone } = req.body;
 
     const user = await prisma.user.update({
-      where: { id: authReq.user.userId },
+      where: { id: authReq.user!.userId },
       data: {
         firstName,
         lastName,
@@ -393,8 +393,8 @@ export class AuthController {
 
     // Log audit
     await AuditService.log({
-      universityId: authReq.user.universityId,
-      userId: authReq.user.userId,
+      universityId: authReq.user!.universityId,
+      userId: authReq.user!.userId,
       action: 'UPDATE',
       entityType: 'User',
       entityId: user.id,
@@ -416,7 +416,7 @@ export class AuthController {
 
     // Get user
     const user = await prisma.user.findUnique({
-      where: { id: authReq.user.userId },
+      where: { id: authReq.user!.userId },
     });
 
     if (!user) {

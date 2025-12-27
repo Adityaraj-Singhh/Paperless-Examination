@@ -3,9 +3,7 @@ dist
 .next
 out
 build
-.env
-.env.local
-.env.*.local
+
 *.log
 .DS_Store
 .vscode

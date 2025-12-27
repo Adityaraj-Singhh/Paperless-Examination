@@ -3,126 +3,126 @@ import { PermissionMap, ExamStateTransition } from './types';
 
 /**
  * Permission to Role Mapping
- * Defines which roles have which permissions
+ * Simplified to 4 roles: SUPER_ADMIN, ADMIN, TEACHER, STUDENT
  */
 export const PERMISSION_ROLE_MAP: PermissionMap = {
-  // University Management
+  // University Management (SUPER_ADMIN only)
   [Permission.CREATE_UNIVERSITY]: [UserRole.SUPER_ADMIN],
   [Permission.UPDATE_UNIVERSITY]: [UserRole.SUPER_ADMIN],
   [Permission.DELETE_UNIVERSITY]: [UserRole.SUPER_ADMIN],
-  [Permission.VIEW_UNIVERSITY]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN],
+  [Permission.VIEW_UNIVERSITY]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
 
-  // School Management
-  [Permission.CREATE_SCHOOL]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN],
-  [Permission.UPDATE_SCHOOL]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN],
-  [Permission.DELETE_SCHOOL]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN],
-  [Permission.VIEW_SCHOOL]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN],
+  // School Management (ADMIN manages schools in their university)
+  [Permission.CREATE_SCHOOL]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.UPDATE_SCHOOL]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.DELETE_SCHOOL]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.VIEW_SCHOOL]: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TEACHER],
 
-  // Department Management
-  [Permission.CREATE_DEPARTMENT]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN],
-  [Permission.UPDATE_DEPARTMENT]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN],
-  [Permission.DELETE_DEPARTMENT]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN],
-  [Permission.VIEW_DEPARTMENT]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN, UserRole.HOD],
+  // Department Management (ADMIN manages departments)
+  [Permission.CREATE_DEPARTMENT]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.UPDATE_DEPARTMENT]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.DELETE_DEPARTMENT]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.VIEW_DEPARTMENT]: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TEACHER],
 
-  // Programme Management
-  [Permission.CREATE_PROGRAMME]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN],
-  [Permission.UPDATE_PROGRAMME]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN],
-  [Permission.DELETE_PROGRAMME]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN],
-  [Permission.VIEW_PROGRAMME]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN, UserRole.HOD],
+  // Programme Management (ADMIN manages programmes)
+  [Permission.CREATE_PROGRAMME]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.UPDATE_PROGRAMME]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.DELETE_PROGRAMME]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.VIEW_PROGRAMME]: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TEACHER],
 
-  // Course Management
-  [Permission.CREATE_COURSE]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.HOD],
-  [Permission.UPDATE_COURSE]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.HOD],
-  [Permission.DELETE_COURSE]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.HOD],
-  [Permission.VIEW_COURSE]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN, UserRole.HOD, UserRole.TEACHER],
+  // Course Management (ADMIN manages courses)
+  [Permission.CREATE_COURSE]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.UPDATE_COURSE]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.DELETE_COURSE]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.VIEW_COURSE]: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT],
 
-  // Exam Management
-  [Permission.CREATE_EXAM]: [UserRole.EXAM_DEPT],
-  [Permission.UPDATE_EXAM]: [UserRole.EXAM_DEPT],
-  [Permission.DELETE_EXAM]: [UserRole.EXAM_DEPT],
-  [Permission.VIEW_EXAM]: [UserRole.EXAM_DEPT, UserRole.DEAN, UserRole.HOD, UserRole.TEACHER],
-  [Permission.APPROVE_EXAM]: [UserRole.DEAN],
-  [Permission.PUBLISH_EXAM]: [UserRole.EXAM_DEPT],
+  // Exam Management (ADMIN creates exams, TEACHER conducts)
+  [Permission.CREATE_EXAM]: [UserRole.ADMIN],
+  [Permission.UPDATE_EXAM]: [UserRole.ADMIN],
+  [Permission.DELETE_EXAM]: [UserRole.ADMIN],
+  [Permission.VIEW_EXAM]: [UserRole.ADMIN, UserRole.TEACHER],
+  [Permission.APPROVE_EXAM]: [UserRole.ADMIN],
+  [Permission.PUBLISH_EXAM]: [UserRole.ADMIN],
 
-  // Question Management
+  // Question Management (TEACHER creates questions)
   [Permission.CREATE_QUESTION]: [UserRole.TEACHER],
   [Permission.UPDATE_QUESTION]: [UserRole.TEACHER],
   [Permission.DELETE_QUESTION]: [UserRole.TEACHER],
-  [Permission.VIEW_QUESTION]: [UserRole.TEACHER, UserRole.HOD, UserRole.EVALUATOR],
-  [Permission.MODERATE_QUESTION]: [UserRole.HOD],
-  [Permission.SEAL_QUESTION_BANK]: [UserRole.HOD],
+  [Permission.VIEW_QUESTION]: [UserRole.TEACHER, UserRole.ADMIN],
+  [Permission.MODERATE_QUESTION]: [UserRole.ADMIN],
+  [Permission.SEAL_QUESTION_BANK]: [UserRole.ADMIN],
 
-  // Paper Management
-  [Permission.GENERATE_PAPER]: [UserRole.EXAM_DEPT, UserRole.HOD],
-  [Permission.APPROVE_PAPER]: [UserRole.DEAN],
-  [Permission.VIEW_PAPER]: [UserRole.DEAN, UserRole.HOD, UserRole.EXAM_DEPT],
+  // Paper Management (TEACHER generates, ADMIN approves)
+  [Permission.GENERATE_PAPER]: [UserRole.TEACHER],
+  [Permission.APPROVE_PAPER]: [UserRole.ADMIN],
+  [Permission.VIEW_PAPER]: [UserRole.ADMIN, UserRole.TEACHER],
 
-  // Exam Conduction
-  [Permission.CONDUCT_EXAM]: [UserRole.EXAM_DEPT],
+  // Exam Conduction (TEACHER conducts, STUDENT takes)
+  [Permission.CONDUCT_EXAM]: [UserRole.TEACHER],
   [Permission.SUBMIT_EXAM]: [UserRole.STUDENT],
-  [Permission.VIEW_EXAM_SESSION]: [UserRole.EXAM_DEPT, UserRole.DEAN, UserRole.HOD],
+  [Permission.VIEW_EXAM_SESSION]: [UserRole.ADMIN, UserRole.TEACHER],
 
-  // Evaluation
-  [Permission.ASSIGN_EVALUATOR]: [UserRole.EXAM_DEPT, UserRole.HOD],
-  [Permission.EVALUATE_ANSWER]: [UserRole.TEACHER, UserRole.EVALUATOR],
-  [Permission.APPROVE_EVALUATION]: [UserRole.HOD],
-  [Permission.VIEW_EVALUATION]: [UserRole.TEACHER, UserRole.EVALUATOR, UserRole.HOD],
+  // Evaluation (TEACHER evaluates)
+  [Permission.ASSIGN_EVALUATOR]: [UserRole.ADMIN],
+  [Permission.EVALUATE_ANSWER]: [UserRole.TEACHER],
+  [Permission.APPROVE_EVALUATION]: [UserRole.ADMIN],
+  [Permission.VIEW_EVALUATION]: [UserRole.TEACHER, UserRole.ADMIN],
 
   // Results
-  [Permission.PUBLISH_RESULTS]: [UserRole.EXAM_DEPT],
-  [Permission.VIEW_RESULTS]: [UserRole.STUDENT, UserRole.TEACHER, UserRole.HOD, UserRole.DEAN],
+  [Permission.PUBLISH_RESULTS]: [UserRole.ADMIN],
+  [Permission.VIEW_RESULTS]: [UserRole.STUDENT, UserRole.TEACHER, UserRole.ADMIN],
   [Permission.REQUEST_SCRUTINY]: [UserRole.STUDENT],
-  [Permission.APPROVE_SCRUTINY]: [UserRole.TEACHER, UserRole.HOD, UserRole.DEAN],
+  [Permission.APPROVE_SCRUTINY]: [UserRole.TEACHER, UserRole.ADMIN],
 
-  // User Management
-  [Permission.CREATE_USER]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN],
-  [Permission.UPDATE_USER]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN],
-  [Permission.DELETE_USER]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN],
-  [Permission.VIEW_USER]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN, UserRole.HOD],
-  [Permission.ASSIGN_ROLE]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN],
+  // User Management (SUPER_ADMIN creates admins, ADMIN creates teachers/students)
+  [Permission.CREATE_USER]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.UPDATE_USER]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.DELETE_USER]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.VIEW_USER]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+  [Permission.ASSIGN_ROLE]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
 
   // Audit
-  [Permission.VIEW_AUDIT_LOGS]: [UserRole.SUPER_ADMIN, UserRole.UNIVERSITY_ADMIN, UserRole.DEAN],
+  [Permission.VIEW_AUDIT_LOGS]: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
 
   // Reports
-  [Permission.GENERATE_REPORTS]: [UserRole.DEAN, UserRole.HOD, UserRole.EXAM_DEPT],
-  [Permission.VIEW_ANALYTICS]: [UserRole.DEAN, UserRole.HOD, UserRole.EXAM_DEPT],
+  [Permission.GENERATE_REPORTS]: [UserRole.ADMIN, UserRole.TEACHER],
+  [Permission.VIEW_ANALYTICS]: [UserRole.ADMIN, UserRole.TEACHER],
 };
 
 /**
  * Exam State Machine Transitions
- * Defines valid state transitions and required permissions
+ * Simplified for 4 roles: SUPER_ADMIN, ADMIN, TEACHER, STUDENT
  */
 export const EXAM_STATE_TRANSITIONS: ExamStateTransition[] = [
   {
     from: ExamState.DRAFT,
     to: ExamState.COURSE_LOCKED,
     requiredPermission: Permission.UPDATE_EXAM,
-    requiredRole: [UserRole.DEAN],
+    requiredRole: [UserRole.ADMIN],
   },
   {
     from: ExamState.COURSE_LOCKED,
     to: ExamState.GENERATED,
     requiredPermission: Permission.GENERATE_PAPER,
-    requiredRole: [UserRole.EXAM_DEPT, UserRole.HOD],
+    requiredRole: [UserRole.TEACHER],
   },
   {
     from: ExamState.GENERATED,
     to: ExamState.APPROVED,
     requiredPermission: Permission.APPROVE_PAPER,
-    requiredRole: [UserRole.DEAN],
+    requiredRole: [UserRole.ADMIN],
   },
   {
     from: ExamState.APPROVED,
     to: ExamState.READY,
     requiredPermission: Permission.UPDATE_EXAM,
-    requiredRole: [UserRole.EXAM_DEPT],
+    requiredRole: [UserRole.ADMIN],
   },
   {
     from: ExamState.READY,
     to: ExamState.OPEN,
     requiredPermission: Permission.CONDUCT_EXAM,
-    requiredRole: [UserRole.EXAM_DEPT],
+    requiredRole: [UserRole.TEACHER],
   },
   {
     from: ExamState.OPEN,
@@ -134,19 +134,19 @@ export const EXAM_STATE_TRANSITIONS: ExamStateTransition[] = [
     from: ExamState.SUBMITTED,
     to: ExamState.EVALUATED,
     requiredPermission: Permission.APPROVE_EVALUATION,
-    requiredRole: [UserRole.HOD],
+    requiredRole: [UserRole.ADMIN],
   },
   {
     from: ExamState.EVALUATED,
     to: ExamState.PUBLISHED,
     requiredPermission: Permission.PUBLISH_RESULTS,
-    requiredRole: [UserRole.EXAM_DEPT],
+    requiredRole: [UserRole.ADMIN],
   },
   {
     from: ExamState.PUBLISHED,
     to: ExamState.CLOSED,
     requiredPermission: Permission.UPDATE_EXAM,
-    requiredRole: [UserRole.EXAM_DEPT],
+    requiredRole: [UserRole.ADMIN],
   },
 ];
 

@@ -1,0 +1,160 @@
+/**
+ * User Roles in the System
+ * SUPER_ADMIN: Can create universities and admins
+ * ADMIN: University administrator who manages schools, departments, teachers
+ * TEACHER: Can create questions, conduct exams, evaluate
+ * STUDENT: Can take exams and view results
+ */
+export declare enum UserRole {
+    SUPER_ADMIN = "SUPER_ADMIN",
+    ADMIN = "ADMIN",
+    TEACHER = "TEACHER",
+    STUDENT = "STUDENT"
+}
+/**
+ * System Permissions
+ */
+export declare enum Permission {
+    CREATE_UNIVERSITY = "CREATE_UNIVERSITY",
+    UPDATE_UNIVERSITY = "UPDATE_UNIVERSITY",
+    DELETE_UNIVERSITY = "DELETE_UNIVERSITY",
+    VIEW_UNIVERSITY = "VIEW_UNIVERSITY",
+    CREATE_SCHOOL = "CREATE_SCHOOL",
+    UPDATE_SCHOOL = "UPDATE_SCHOOL",
+    DELETE_SCHOOL = "DELETE_SCHOOL",
+    VIEW_SCHOOL = "VIEW_SCHOOL",
+    CREATE_DEPARTMENT = "CREATE_DEPARTMENT",
+    UPDATE_DEPARTMENT = "UPDATE_DEPARTMENT",
+    DELETE_DEPARTMENT = "DELETE_DEPARTMENT",
+    VIEW_DEPARTMENT = "VIEW_DEPARTMENT",
+    CREATE_PROGRAMME = "CREATE_PROGRAMME",
+    UPDATE_PROGRAMME = "UPDATE_PROGRAMME",
+    DELETE_PROGRAMME = "DELETE_PROGRAMME",
+    VIEW_PROGRAMME = "VIEW_PROGRAMME",
+    CREATE_COURSE = "CREATE_COURSE",
+    UPDATE_COURSE = "UPDATE_COURSE",
+    DELETE_COURSE = "DELETE_COURSE",
+    VIEW_COURSE = "VIEW_COURSE",
+    CREATE_EXAM = "CREATE_EXAM",
+    UPDATE_EXAM = "UPDATE_EXAM",
+    DELETE_EXAM = "DELETE_EXAM",
+    VIEW_EXAM = "VIEW_EXAM",
+    APPROVE_EXAM = "APPROVE_EXAM",
+    PUBLISH_EXAM = "PUBLISH_EXAM",
+    CREATE_QUESTION = "CREATE_QUESTION",
+    UPDATE_QUESTION = "UPDATE_QUESTION",
+    DELETE_QUESTION = "DELETE_QUESTION",
+    VIEW_QUESTION = "VIEW_QUESTION",
+    MODERATE_QUESTION = "MODERATE_QUESTION",
+    SEAL_QUESTION_BANK = "SEAL_QUESTION_BANK",
+    GENERATE_PAPER = "GENERATE_PAPER",
+    APPROVE_PAPER = "APPROVE_PAPER",
+    VIEW_PAPER = "VIEW_PAPER",
+    CONDUCT_EXAM = "CONDUCT_EXAM",
+    SUBMIT_EXAM = "SUBMIT_EXAM",
+    VIEW_EXAM_SESSION = "VIEW_EXAM_SESSION",
+    ASSIGN_EVALUATOR = "ASSIGN_EVALUATOR",
+    EVALUATE_ANSWER = "EVALUATE_ANSWER",
+    APPROVE_EVALUATION = "APPROVE_EVALUATION",
+    VIEW_EVALUATION = "VIEW_EVALUATION",
+    PUBLISH_RESULTS = "PUBLISH_RESULTS",
+    VIEW_RESULTS = "VIEW_RESULTS",
+    REQUEST_SCRUTINY = "REQUEST_SCRUTINY",
+    APPROVE_SCRUTINY = "APPROVE_SCRUTINY",
+    CREATE_USER = "CREATE_USER",
+    UPDATE_USER = "UPDATE_USER",
+    DELETE_USER = "DELETE_USER",
+    VIEW_USER = "VIEW_USER",
+    ASSIGN_ROLE = "ASSIGN_ROLE",
+    VIEW_AUDIT_LOGS = "VIEW_AUDIT_LOGS",
+    GENERATE_REPORTS = "GENERATE_REPORTS",
+    VIEW_ANALYTICS = "VIEW_ANALYTICS"
+}
+/**
+ * Exam Workflow States
+ */
+export declare enum ExamState {
+    DRAFT = "DRAFT",
+    COURSE_LOCKED = "COURSE_LOCKED",
+    GENERATED = "GENERATED",
+    APPROVED = "APPROVED",
+    READY = "READY",
+    OPEN = "OPEN",
+    SUBMITTED = "SUBMITTED",
+    EVALUATED = "EVALUATED",
+    PUBLISHED = "PUBLISHED",
+    CLOSED = "CLOSED"
+}
+/**
+ * Question Types
+ */
+export declare enum QuestionType {
+    OBJECTIVE = "OBJECTIVE",
+    SUBJECTIVE = "SUBJECTIVE",
+    TRUE_FALSE = "TRUE_FALSE",
+    FILL_IN_BLANK = "FILL_IN_BLANK"
+}
+/**
+ * Bloom's Taxonomy Levels (Revised)
+ */
+export declare enum BloomLevel {
+    REMEMBER = "REMEMBER",
+    UNDERSTAND = "UNDERSTAND",
+    APPLY = "APPLY",
+    ANALYZE = "ANALYZE",
+    EVALUATE = "EVALUATE",
+    CREATE = "CREATE"
+}
+/**
+ * Question Difficulty Levels
+ */
+export declare enum DifficultyLevel {
+    EASY = "EASY",
+    MEDIUM = "MEDIUM",
+    HARD = "HARD"
+}
+/**
+ * Paper Status
+ */
+export declare enum PaperStatus {
+    DRAFT = "DRAFT",
+    PENDING_APPROVAL = "PENDING_APPROVAL",
+    APPROVED = "APPROVED",
+    REJECTED = "REJECTED"
+}
+/**
+ * Evaluation Status
+ */
+export declare enum EvaluationStatus {
+    PENDING = "PENDING",
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED",
+    APPROVED = "APPROVED"
+}
+/**
+ * Scrutiny Status
+ */
+export declare enum ScrutinyStatus {
+    REQUESTED = "REQUESTED",
+    TEACHER_REVIEW = "TEACHER_REVIEW",
+    HOD_REVIEW = "HOD_REVIEW",
+    DEAN_REVIEW = "DEAN_REVIEW",
+    APPROVED = "APPROVED",
+    REJECTED = "REJECTED"
+}
+/**
+ * Audit Action Types
+ */
+export declare enum AuditAction {
+    CREATE = "CREATE",
+    UPDATE = "UPDATE",
+    DELETE = "DELETE",
+    LOGIN = "LOGIN",
+    LOGOUT = "LOGOUT",
+    STATE_CHANGE = "STATE_CHANGE",
+    APPROVAL = "APPROVAL",
+    REJECTION = "REJECTION",
+    EVALUATION = "EVALUATION",
+    SUBMISSION = "SUBMISSION"
+}
+//# sourceMappingURL=enums.d.ts.map

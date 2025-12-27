@@ -1,14 +1,14 @@
 /**
  * User Roles in the System
+ * SUPER_ADMIN: Can create universities and admins
+ * ADMIN: University administrator who manages schools, departments, teachers
+ * TEACHER: Can create questions, conduct exams, evaluate
+ * STUDENT: Can take exams and view results
  */
 export enum UserRole {
   SUPER_ADMIN = 'SUPER_ADMIN',
-  UNIVERSITY_ADMIN = 'UNIVERSITY_ADMIN',
-  DEAN = 'DEAN',
-  HOD = 'HOD',
-  EXAM_DEPT = 'EXAM_DEPT',
+  ADMIN = 'ADMIN',
   TEACHER = 'TEACHER',
-  EVALUATOR = 'EVALUATOR',
   STUDENT = 'STUDENT',
 }
 

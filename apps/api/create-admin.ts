@@ -5,32 +5,57 @@ import { UserRole, Permission } from '@paperless/shared';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Use the existing test university
   const universityId = '3f9b941b-e0a2-4d6f-a58c-2f39e8ae410f';
 
-  console.log('🔧 Creating UNIVERSITY_ADMIN role and user...\n');
+  console.log('🔧 Setting up SUPER_ADMIN user...\n');
 
-  // Create/get UNIVERSITY_ADMIN role
+  // Create/get test university
+  const university = await prisma.university.upsert({
+    where: { id: universityId },
+    update: {},
+    create: {
+      id: universityId,
+      name: 'System',
+      code: 'SYSTEM',
+      country: 'India',
+    },
+  });
+
+  console.log(`✅ System university ready (ID: ${university.id})`);
+  console.log('🔧 Creating SUPER_ADMIN role and user...\n');
+
+  // Create/get SUPER_ADMIN role
   const adminRole = await prisma.role.upsert({
     where: {
       universityId_name: {
         universityId,
-        name: UserRole.UNIVERSITY_ADMIN,
+        name: UserRole.SUPER_ADMIN,
       },
     },
     update: {},
     create: {
       universityId,
-      name: UserRole.UNIVERSITY_ADMIN,
-      description: 'University Administrator with full permissions',
+      name: UserRole.SUPER_ADMIN,
+      description: 'Super Administrator with full system access - can create universities and admins',
       isSystem: true,
     },
   });
 
-  console.log(`✅ UNIVERSITY_ADMIN role ready (ID: ${adminRole.id})`);
+  console.log(`✅ SUPER_ADMIN role ready (ID: ${adminRole.id})`)
 
-  // Assign all necessary permissions to UNIVERSITY_ADMIN
+  // Define all necessary permissions for SUPER_ADMIN
   const adminPermissions = [
+    // University management (SUPER_ADMIN only)
+    Permission.CREATE_UNIVERSITY,
+    Permission.UPDATE_UNIVERSITY,
+    Permission.DELETE_UNIVERSITY,
+    Permission.VIEW_UNIVERSITY,
+    // User management (create admins)
+    Permission.CREATE_USER,
+    Permission.UPDATE_USER,
+    Permission.DELETE_USER,
+    Permission.VIEW_USER,
+    Permission.ASSIGN_ROLE,
     // School permissions
     Permission.CREATE_SCHOOL,
     Permission.VIEW_SCHOOL,
@@ -51,48 +76,74 @@ async function main() {
     Permission.VIEW_COURSE,
     Permission.UPDATE_COURSE,
     Permission.DELETE_COURSE,
+    // Audit
+    Permission.VIEW_AUDIT_LOGS,
+    Permission.GENERATE_REPORTS,
+    Permission.VIEW_ANALYTICS,
   ];
 
-  // Create/update role permissions
+  // First, create all permissions if they don't exist
+  console.log('🔧 Ensuring permissions exist...');
   for (const permissionName of adminPermissions) {
-    await prisma.rolePermission.upsert({
-      where: {
-        roleId_permissionId: {
-          roleId: adminRole.id,
-          permissionId: permissionName,
-        },
-      },
+    await prisma.permission.upsert({
+      where: { name: permissionName },
       update: {},
       create: {
-        roleId: adminRole.id,
-        permissionId: permissionName,
+        name: permissionName,
+        description: `Permission to ${permissionName.replace(/_/g, ' ').toLowerCase()}`,
       },
     });
   }
+  console.log(`✅ Created/verified ${adminPermissions.length} permissions`);
 
-  console.log(`✅ Assigned ${adminPermissions.length} permissions to UNIVERSITY_ADMIN role`);
+  // Now assign permissions to the role
+  console.log('🔧 Assigning permissions to SUPER_ADMIN role...');
+  for (const permissionName of adminPermissions) {
+    // Get the permission ID
+    const permission = await prisma.permission.findUnique({
+      where: { name: permissionName },
+    });
 
-  // Check if admin user already exists
+    if (permission) {
+      await prisma.rolePermission.upsert({
+        where: {
+          roleId_permissionId: {
+            roleId: adminRole.id,
+            permissionId: permission.id,
+          },
+        },
+        update: {},
+        create: {
+          roleId: adminRole.id,
+          permissionId: permission.id,
+        },
+      });
+    }
+  }
+
+  console.log(`✅ Assigned ${adminPermissions.length} permissions to SUPER_ADMIN role`);
+
+  // Check if super admin user already exists
   const existingAdmin = await prisma.user.findUnique({
-    where: { email: 'admin@test.com' },
+    where: { email: 'superadmin@system.com' },
   });
 
   if (existingAdmin) {
-    console.log('⚠️  Admin user already exists!');
-    console.log('Email: admin@test.com');
+    console.log('⚠️  Super Admin user already exists!');
+    console.log('Email: superadmin@system.com');
     console.log('If you forgot the password, please delete this user from database first.\n');
     return;
   }
 
-  // Create admin user
-  const hashedPassword = await hashPassword('Admin@123');
+  // Create super admin user
+  const hashedPassword = await hashPassword('SuperAdmin@123');
 
   await prisma.user.create({
     data: {
-      email: 'admin@test.com',
+      email: 'superadmin@system.com',
       password: hashedPassword,
-      firstName: 'Admin',
-      lastName: 'User',
+      firstName: 'Super',
+      lastName: 'Admin',
       universityId,
       userRoles: {
         create: {
@@ -102,17 +153,16 @@ async function main() {
     },
   });
 
-  console.log('\n✅ Admin user created successfully!');
+  console.log('\n✅ Super Admin user created successfully!');
   console.log('═══════════════════════════════════════');
-  console.log('Email:    admin@test.com');
-  console.log('Password: Admin@123');
-  console.log('Role:     UNIVERSITY_ADMIN');
+  console.log('Email:    superadmin@system.com');
+  console.log('Password: SuperAdmin@123');
+  console.log('Role:     SUPER_ADMIN');
   console.log('═══════════════════════════════════════');
   console.log('\nYou can now login with these credentials to:');
-  console.log('- Create and manage schools');
-  console.log('- Create and manage departments');
-  console.log('- Create and manage programmes');
-  console.log('- Create and manage courses');
+  console.log('- Create universities');
+  console.log('- Create and assign admins to universities');
+  console.log('- Manage the entire system');
   console.log('\nLogin at: http://localhost:3000/login\n');
 }
 

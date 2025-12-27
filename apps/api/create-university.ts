@@ -4,8 +4,10 @@ const prisma = new PrismaClient();
 
 async function createUniversity() {
   try {
-    const university = await prisma.university.create({
-      data: {
+    const university = await prisma.university.upsert({
+      where: { code: 'TU001' },
+      update: {},
+      create: {
         name: 'Test University',
         code: 'TU001',
         address: '123 Test St',
@@ -16,7 +18,7 @@ async function createUniversity() {
       },
     });
 
-    console.log('✅ University created successfully!');
+    console.log('✅ University ready!');
     console.log('University ID:', university.id);
     console.log('University Name:', university.name);
     console.log('\nUse this ID when registering a user.');
