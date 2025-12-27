@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Permission } from '@paperless/shared';
+import { Permission, UserRole } from '@paperless/shared';
 import { AppError } from './errorHandler';
 import { AuthRequest } from './auth';
 import { prisma } from '../config/database';
@@ -19,6 +19,21 @@ export const requirePermission = (permission: Permission) => {
 
       if (!authReq.user) {
         throw new AppError(401, 'User not authenticated');
+      }
+
+      // Debug logging
+      console.log('🔍 Permission Check:', {
+        permission,
+        userRoles: authReq.user.roles,
+        userId: authReq.user.userId,
+        universityId: authReq.user.universityId
+      });
+
+      // SUPER_ADMIN has all permissions
+      if (authReq.user.roles.includes(UserRole.SUPER_ADMIN)) {
+        console.log('✅ SUPER_ADMIN detected - bypassing permission check');
+        next();
+        return;
       }
 
       // Check if user has permission through their roles
@@ -130,6 +145,12 @@ export const requireAnyPermission = (...permissions: Permission[]) => {
         throw new AppError(401, 'User not authenticated');
       }
 
+      // SUPER_ADMIN has all permissions
+      if (authReq.user.roles.includes(UserRole.SUPER_ADMIN)) {
+        next();
+        return;
+      }
+
       let hasPermission = false;
 
       for (const permission of permissions) {
@@ -173,6 +194,12 @@ export const requireAllPermissions = (...permissions: Permission[]) => {
 
       if (!authReq.user) {
         throw new AppError(401, 'User not authenticated');
+      }
+
+      // SUPER_ADMIN has all permissions
+      if (authReq.user.roles.includes(UserRole.SUPER_ADMIN)) {
+        next();
+        return;
       }
 
       for (const permission of permissions) {
